@@ -12,8 +12,6 @@ namespace EasyGrow.Data
     {
         public static async Task InitializeAsync(PlantContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
-
-
             var adminRole = await roleManager.FindByNameAsync("admin");
             if (adminRole == null)
             {
@@ -30,15 +28,19 @@ namespace EasyGrow.Data
 
             if (!context.Geolocations.Any())
             {
-                Geolocation chernivtsi = new Geolocation();
-                chernivtsi.Latitude = "48.2921";
-                chernivtsi.Longitude = "25.9358";
-                chernivtsi.SeaLevel = "248";
+                var chernivtsi = new Geolocation
+                {
+                    Latitude = "48.2921",
+                    Longitude = "25.9358",
+                    SeaLevel = "248"
+                };
 
-                Geolocation london = new Geolocation();
-                london.Latitude = "51.5074";
-                london.Longitude = "0.1278";
-                london.SeaLevel = "35";
+                var london = new Geolocation
+                {
+                    Latitude = "51.5074",
+                    Longitude = "0.1278",
+                    SeaLevel = "35"
+                };
 
                 context.Geolocations.AddRange(chernivtsi, london);
                 context.SaveChanges();
@@ -46,17 +48,23 @@ namespace EasyGrow.Data
 
             if (!context.Phases.Any())
             {
-                Phase planting = new Phase();
-                planting.Duration = 1;
-                planting.Name = "Planting";
+                var planting = new Phase
+                {
+                    Duration = 1,
+                    Name = "Planting"
+                };
 
-                Phase vegetative = new Phase();
-                vegetative.Duration = 14;
-                vegetative.Name = "Vegetative";
+                var vegetative = new Phase
+                {
+                    Duration = 14,
+                    Name = "Vegetative"
+                };
 
-                Phase firstFlowering = new Phase();
-                firstFlowering.Duration = 15;
-                firstFlowering.Name = "First Flowering";
+                var firstFlowering = new Phase
+                {
+                    Duration = 15,
+                    Name = "First Flowering"
+                };
 
                 context.Phases.AddRange(planting, vegetative, firstFlowering);
                 context.SaveChanges();
@@ -64,14 +72,21 @@ namespace EasyGrow.Data
 
             if (!context.GroundwaterLevels.Any())
             {
-                GroundwaterLevel first = new GroundwaterLevel();
-                first.Name = "1";
+                var first = new GroundwaterLevel
+                {
+                    Name = "1"
+                };
 
-                GroundwaterLevel second = new GroundwaterLevel();
-                first.Name = "2";
+                var second = new GroundwaterLevel
+                {
+                    Name = "2"
+                };
 
-                GroundwaterLevel third = new GroundwaterLevel();
-                first.Name = "3";
+
+                var third = new GroundwaterLevel
+                {
+                    Name = "3"
+                };
 
                 context.GroundwaterLevels.AddRange(first, second, third);
                 context.SaveChanges();
@@ -79,8 +94,10 @@ namespace EasyGrow.Data
 
             if (!context.Classes.Any())
             {
-                Class vegetable = new Class();
-                vegetable.Name = "vegetable";
+                var vegetable = new Class
+                {
+                    Name = "vegetable"
+                };
 
                 context.Classes.Add(vegetable);
                 context.SaveChanges();
@@ -89,15 +106,18 @@ namespace EasyGrow.Data
             if (!context.Users.Any())
             {
                 var geo = context.Geolocations.FirstOrDefault();
-                var user = new ApplicationUser
+                if (geo != null)
                 {
-                    UserName = "user@gmail.com",
-                    Email = "user@gmail.com",
-                    GeolocationId = geo.GeolocationId
-                };
+                    var user = new ApplicationUser
+                    {
+                        UserName = "user@gmail.com",
+                        Email = "user@gmail.com",
+                        GeolocationId = geo.GeolocationId
+                    };
 
-                var result = await userManager.CreateAsync(user, password: "Wazxsw12!");
-                await userManager.AddToRoleAsync(user, role: "user");
+                    await userManager.CreateAsync(user, password: "Wazxsw12!");
+                    await userManager.AddToRoleAsync(user, role: "user");
+                }
                 context.SaveChanges();
 
                 var admin = new ApplicationUser
@@ -108,7 +128,7 @@ namespace EasyGrow.Data
                 };
                 try
                 {
-                    result = await userManager.CreateAsync(admin, password: "Wazxsw12!");
+                    await userManager.CreateAsync(admin, password: "Wazxsw12!");
                     await userManager.AddToRoleAsync(admin, role: "admin");
                     context.SaveChanges();
                 }
@@ -124,7 +144,8 @@ namespace EasyGrow.Data
                 var addCrit = new AdditinalCriteries();
                 var groundWater = context.GroundwaterLevels.FirstOrDefault();
                 addCrit.AreaSawn = 25;
-                addCrit.GroundwaterLevelId = groundWater.GroundwaterLevelId;
+
+                if (groundWater != null) addCrit.GroundwaterLevelId = groundWater.GroundwaterLevelId;
 
                 context.AdditinalCriteries.Add(addCrit);
                 context.SaveChanges();
@@ -132,16 +153,18 @@ namespace EasyGrow.Data
 
             if (!context.Plants.Any())
             {
-                var plant = new Plant();
-                plant.AdditinalCriteries = context.AdditinalCriteries.FirstOrDefault();
-                plant.Age = 2;
-                plant.AmountOfFertilizingDays = 21;
-                plant.AmountOfWater = 2;
-                plant.Class = context.Classes.FirstOrDefault();
-                plant.FrequencyOfWateringDays = 2;
-                plant.Info = "Interesting info...";
-                plant.Name = "Tomato";
-                plant.PhaseId = context.Phases.FirstOrDefault().PhaseId;
+                var plant = new Plant
+                {
+                    AdditinalCriteries = context.AdditinalCriteries.FirstOrDefault(),
+                    Age = 2,
+                    AmountOfFertilizingDays = 21,
+                    AmountOfWater = 2,
+                    Class = context.Classes.FirstOrDefault(),
+                    FrequencyOfWateringDays = 2,
+                    Info = "Interesting info...",
+                    Name = "Tomato",
+                    PhaseId = context.Phases.FirstOrDefault()?.PhaseId
+                };
 
                 context.Plants.Add(plant);
                 context.SaveChanges();
@@ -149,11 +172,13 @@ namespace EasyGrow.Data
 
             if (!context.UserPlants.Any())
             {
-                UserPlants UserPlant = new UserPlants();
-                UserPlant.ApplicationUser = context.Users.FirstOrDefault();
-                UserPlant.Plant = context.Plants.FirstOrDefault();
+                var userPlant = new UserPlants
+                {
+                    ApplicationUser = context.Users.FirstOrDefault(),
+                    Plant = context.Plants.FirstOrDefault()
+                };
 
-                context.UserPlants.Add(UserPlant);
+                context.UserPlants.Add(userPlant);
                 context.SaveChanges();
             }
         }

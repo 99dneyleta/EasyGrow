@@ -30,7 +30,7 @@ namespace EasyGrow.Controllers
 
             var allUsers = _userService.GetAll().ToList();
 
-            var allPlantsDto = allUsers.Select(element => Mapper.Map<ApplicationUserDto>(element)).ToList();
+            var allPlantsDto = allUsers.Select(Mapper.Map<ApplicationUserDto>).ToList();
             return Ok(allPlantsDto);
 
         }
@@ -59,7 +59,7 @@ namespace EasyGrow.Controllers
                 var plant = _userService.AddPlantToUser(accessToken, plantId);
                 return Ok(plant);
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest();
             }

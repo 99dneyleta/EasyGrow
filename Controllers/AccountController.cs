@@ -21,7 +21,7 @@ namespace EasyGrow.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
-        private RoleManager<IdentityRole> RoleManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -33,7 +33,7 @@ namespace EasyGrow.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
-            RoleManager = roleManager;
+            _roleManager = roleManager;
         }
 
         [HttpPost("/login")]
@@ -84,7 +84,7 @@ namespace EasyGrow.Controllers
             try
             {
                 var result = await _userManager.CreateAsync(user, model.Password);
-                var adminRole = await RoleManager.FindByNameAsync("user");
+                var adminRole = await _roleManager.FindByNameAsync("user");
                 if (adminRole == null)
                 {
                     return StatusCode(500) + "Can't find role user ";

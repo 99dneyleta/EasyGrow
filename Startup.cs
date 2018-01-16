@@ -38,8 +38,6 @@ namespace EasyGrow
                 .AddEntityFrameworkStores<PlantContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddTransient(typeof(RoleManager<IdentityRole>));
-
             // Add automapper
 
             Mapper.Initialize(cfg =>

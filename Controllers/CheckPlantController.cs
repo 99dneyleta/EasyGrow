@@ -16,14 +16,12 @@ namespace EasyGrow.Controllers
     [Route("checkplant")]
     public class CheckPlantController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPlantService _plantService;
         private readonly PlantContext _context;
 
 
-        public CheckPlantController(UserManager<ApplicationUser> userManager, IPlantService plantService, PlantContext context)
-        {
-            _userManager = userManager;
+        public CheckPlantController(IPlantService plantService, PlantContext context)
+        { 
             _plantService = plantService;
             _context = context;
         }
@@ -54,14 +52,14 @@ namespace EasyGrow.Controllers
                 return BadRequest("User haven't this plant");
             }
 
-            Plant plant = Mapper.Map<Plant>(_plantService.Get(id));
+            var plant = Mapper.Map<Plant>(_plantService.Get(id));
 
             if (plant == null)
             {
                 return BadRequest("Db haven't this plant");
             }
 
-            Geolocation geolocation = _context.Geolocations.FirstOrDefault(p => p.GeolocationId == user.GeolocationId);
+            var geolocation = _context.Geolocations.FirstOrDefault(p => p.GeolocationId == user.GeolocationId);
 
             if (geolocation == null)
             {

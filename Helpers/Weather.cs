@@ -16,9 +16,9 @@ namespace EasyGrow.Helpers
         {
             var client = new HttpClient();
             ICollection<WeatherResponse> allResponses = new List<WeatherResponse>();
-            for (int i = 0; i < daysCount; i++)
+            for (var i = 0; i < daysCount; i++)
             {
-                string fullPath = pathBeforeArgs + geolocation.Latitude + "," + geolocation.Longitude + "&dt=" + DateTime.Now.AddDays((double)-daysCount + i).ToString("yyyy-MM-dd");
+                var fullPath = pathBeforeArgs + geolocation.Latitude + "," + geolocation.Longitude + "&dt=" + DateTime.Now.AddDays((double)-daysCount + i).ToString("yyyy-MM-dd");
                 var response = await client.GetAsync(fullPath);
                 var stringResult = await response.Content.ReadAsStringAsync();
 
@@ -41,21 +41,10 @@ namespace EasyGrow.Helpers
 
             try
             {
-                string pathBeforeArgs = CreatePathToApi(arg);
-                ICollection<WeatherResponse> response = await GetWeatherAsync(daysCount, geolocation, pathBeforeArgs);
+                var pathBeforeArgs = CreatePathToApi(arg);
+                var response = await GetWeatherAsync(daysCount, geolocation, pathBeforeArgs);
 
-                foreach (var day in response)
-                {
-                    var weatherDayHistory = day.Forecast.ForecastDay.First();
-                    foreach (var element in weatherDayHistory.Hour)
-                    {
-                        if (element.will_it_rain)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                return response.Select(day => day.Forecast.ForecastDay.First()).SelectMany(weatherDayHistory => weatherDayHistory.Hour).Any(element => element.will_it_rain);
             }
             catch (Exception e)
             {
@@ -65,21 +54,16 @@ namespace EasyGrow.Helpers
 
         private static string CreatePathToApi(string arg)
         {
-            if(arg == "forecast")
+            switch (arg)
             {
-                return "http://api.apixu.com/v1/forecast.json?key=fa29b735c66d4cfeb8d131349181001&q=";
-            }
-            else if(arg == "history")
-            {
-                return "http://api.apixu.com/v1/history.json?key=fa29b735c66d4cfeb8d131349181001&q=";
-            }
-            else if(arg == "current")
-            {
-                return "http://api.apixu.com/v1/current.json?key=fa29b735c66d4cfeb8d131349181001&q=";
-            }
-            else
-            {
-                return "Undefined arg in query";
+                case "forecast":
+                    return "http://api.apixu.com/v1/forecast.json?key=fa29b735c66d4cfeb8d131349181001&q=";
+                case "history":
+                    return "http://api.apixu.com/v1/history.json?key=fa29b735c66d4cfeb8d131349181001&q=";
+                case "current":
+                    return "http://api.apixu.com/v1/current.json?key=fa29b735c66d4cfeb8d131349181001&q=";
+                default:
+                    return "Undefined arg in query";
             }
         }
     }

@@ -63,7 +63,7 @@ namespace EasyGrow.Repository
 
         public PlantDto AddPlantToUser(string accessToken, long plantId)
         {
-            UserPlants newUserPlant = new UserPlants
+            var newUserPlant = new UserPlants
             {
                 ApplicationUser = JwtHelper.GetUserJwt(accessToken, _context)
             };
@@ -80,7 +80,7 @@ namespace EasyGrow.Repository
 
         public PlantDto RemovePlantFromUser(string accessToken, long plantId)
         {
-            UserPlants newUserPlant = new UserPlants
+            var newUserPlant = new UserPlants
             {
                 ApplicationUser = JwtHelper.GetUserJwt(accessToken, _context)
             };

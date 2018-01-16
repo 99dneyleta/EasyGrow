@@ -65,7 +65,7 @@ namespace EasyGrow.Controllers
             try
             {
 
-                Plant newPlant = Mapper.Map<Plant>(_plantService.Create(plantDto));
+                var newPlant = Mapper.Map<Plant>(_plantService.Create(plantDto));
 
                 LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.CreateItem, LogCategory.Info,
                     "Creating item: " + newPlant.PlantId + " Done"));
@@ -95,7 +95,7 @@ namespace EasyGrow.Controllers
 
             try
             {
-                Plant updatedPlant = Mapper.Map<Plant>(_plantService.Update(id, plant));
+                var updatedPlant = Mapper.Map<Plant>(_plantService.Update(id, plant));
 
                 if (updatedPlant == null)
                 {
@@ -121,7 +121,7 @@ namespace EasyGrow.Controllers
         {
             string accessToken = ((Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.FrameRequestHeaders)Request.Headers)
                 .HeaderAuthorization;
-            Plant plant = Mapper.Map<Plant>(_plantService.Delete(id, accessToken));
+            var plant = Mapper.Map<Plant>(_plantService.Delete(id, accessToken));
 
             if (plant == null)
             {

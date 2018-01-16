@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EasyGrow.Data
 {
-    public class PlantContext : IdentityDbContext
+    public sealed class PlantContext : IdentityDbContext
     {
-        public PlantContext(DbContextOptions<PlantContext> options) :
+        public PlantContext(DbContextOptions options) :
             base(options)
         {
             Database.Migrate();
@@ -81,6 +81,5 @@ namespace EasyGrow.Data
                .HasForeignKey(sc => sc.PlantId)
                .OnDelete(DeleteBehavior.Cascade);
         }
-
     }
 }
