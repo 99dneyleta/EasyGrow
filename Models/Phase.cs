@@ -7,13 +7,14 @@ namespace EasyGrow.Models
         public Phase()
         {
             PhasePlants = new List<PhasePlant>();
+            UserPlantPhaseGeo = new List<UserPlantPhaseGeo>();
         }
 
         public int PhaseId { get; set; }
         public int Duration { get; set; }
         public string Name { get; set; }
 
-        public Plant Plant { get; set; }
         public List<PhasePlant> PhasePlants { get; set; }
+        public List<UserPlantPhaseGeo> UserPlantPhaseGeo { get; set; }
     }
 }

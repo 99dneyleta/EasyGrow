@@ -20,26 +20,38 @@ namespace EasyGrow.Data
         public DbSet<Geolocation> Geolocations { get; set; }
         public DbSet<GroundwaterLevel> GroundwaterLevels { get; set; }
         public new DbSet<ApplicationUser> Users { get; set; }
-        public DbSet<UserPlants> UserPlants { get; set; }
+        public DbSet<UserPlantPhaseGeo> UserPlantPhaseGeo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<UserPlants>()
-                .HasKey(t => new { t.UserId, t.PlantId });
+            modelBuilder.Entity<UserPlantPhaseGeo>()
+                .HasKey(t => new { t.UserId, t.PlantId, t.PhaseId, t.GeolocationId });
 
 
-            modelBuilder.Entity<UserPlants>()
+            modelBuilder.Entity<UserPlantPhaseGeo>()
                 .HasOne(sc => sc.Plant)
-                .WithMany(c => c.UserPlants)
+                .WithMany(c => c.UserPlantPhaseGeo)
                 .HasForeignKey(sc => sc.PlantId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<UserPlants>()
+            modelBuilder.Entity<UserPlantPhaseGeo>()
                 .HasOne(sc => sc.ApplicationUser)
-                .WithMany(s => s.UserPlants)
+                .WithMany(s => s.UserPlantPhaseGeo)
                 .HasForeignKey(sc => sc.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserPlantPhaseGeo>()
+                .HasOne(o => o.Phase)
+                .WithMany(m => m.UserPlantPhaseGeo)
+                .HasForeignKey(o => o.PhaseId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserPlantPhaseGeo>()
+                .HasOne(o => o.Geolocation)
+                .WithMany(m => m.UserPlantPhaseGeo)
+                .HasForeignKey(o => o.GeolocationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<PhasePlant>()
@@ -69,17 +81,6 @@ namespace EasyGrow.Data
                .HasForeignKey(sc => sc.ClassId)
                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<ApplicationUser>()
-               .HasOne(sc => sc.Geolocation)
-               .WithMany(s => s.ApplicationUsers)
-               .HasForeignKey(sc => sc.GeolocationId)
-               .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<ApplicationUser>()
-               .HasOne(sc => sc.Plant)
-               .WithMany(s => s.ApplicationUsers)
-               .HasForeignKey(sc => sc.PlantId)
-               .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

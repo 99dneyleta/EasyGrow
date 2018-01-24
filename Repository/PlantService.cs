@@ -58,7 +58,6 @@ namespace EasyGrow.Repository
             newPlant.FrequencyOfWateringDays = plant.FrequencyOfWateringDays;
             newPlant.Info = plant.Info;
             newPlant.Name = plant.Name;
-            newPlant.PhaseId = plant.PhaseId;
 
             _context.Plants.Update(newPlant);
             _context.SaveChanges();

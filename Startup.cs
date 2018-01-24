@@ -9,13 +9,14 @@ using EasyGrow.Models;
 using EasyGrow.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace EasyGrow
 {
@@ -32,19 +33,32 @@ namespace EasyGrow
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<PlantContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
+           
+            
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<PlantContext>()
                 .AddDefaultTokenProviders();
 
             // Add automapper
+            IQueryable<IdentityRole> roles = null;
+            
 
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<PlantDto, Plant>();
                 cfg.CreateMap<Plant, PlantDto>();
                 cfg.CreateMap<ApplicationUserDto, ApplicationUser>();
+                
+                cfg.CreateMap<ApplicationUser, ApplicationUserDto>()
+                    .ForMember(x => x.Role, opt =>
+                        opt.MapFrom(src =>
+                            src.Id
+                                .Join(roles, a=>src.Id,  b => b.Id, (a, b) => b.Name)
+                                .ToList()
+                        )
+                    );
             });
 
             // Create own container

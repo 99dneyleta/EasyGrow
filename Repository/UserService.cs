@@ -39,8 +39,6 @@ namespace EasyGrow.Repository
                 return null;
             }
 
-            newUser.GeolocationId = user.GeolocationId;
-
             _context.Users.Update(newUser);
             _context.SaveChanges();
 
@@ -63,7 +61,7 @@ namespace EasyGrow.Repository
 
         public PlantDto AddPlantToUser(string accessToken, long plantId)
         {
-            var newUserPlant = new UserPlants
+            var newUserPlant = new UserPlantPhaseGeo
             {
                 ApplicationUser = JwtHelper.GetUserJwt(accessToken, _context)
             };
@@ -72,7 +70,7 @@ namespace EasyGrow.Repository
             newUserPlant.Plant = Mapper.Map<Plant>(plant);
             var plantDto = Mapper.Map<PlantDto>(plant);
 
-            _context.UserPlants.Add(newUserPlant);
+            _context.UserPlantPhaseGeo.Add(newUserPlant);
             _context.SaveChanges();
 
             return plantDto;
@@ -80,7 +78,7 @@ namespace EasyGrow.Repository
 
         public PlantDto RemovePlantFromUser(string accessToken, long plantId)
         {
-            var newUserPlant = new UserPlants
+            var newUserPlant = new UserPlantPhaseGeo
             {
                 ApplicationUser = JwtHelper.GetUserJwt(accessToken, _context)
             };
@@ -88,7 +86,7 @@ namespace EasyGrow.Repository
             var plant = _plantService.Get(plantId);
             newUserPlant.Plant = Mapper.Map<Plant>(plant);
 
-            _context.UserPlants.Remove(newUserPlant);
+            _context.UserPlantPhaseGeo.Remove(newUserPlant);
             return Mapper.Map<PlantDto>(plant);
         }
 
@@ -101,7 +99,7 @@ namespace EasyGrow.Repository
             }
 
 
-            var userplants = _context.UserPlants.Where(x => x.ApplicationUser == user).ToList();
+            var userplants = _context.UserPlantPhaseGeo.Where(x => x.ApplicationUser == user).ToList();
 
             return userplants.Select(element => Mapper.Map<PlantDto>(_context.Plants.FirstOrDefault(r => r.PlantId == element.PlantId))).ToList();
         }

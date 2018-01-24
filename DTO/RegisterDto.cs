@@ -10,7 +10,5 @@ namespace EasyGrow.DTO
         [Required]
         [StringLength(100, ErrorMessage = "Password should have at least 6 symbols", MinimumLength = 6)]
         public string Password { get; set; }
-        [Required]
-        public int GeolocationId { get; set; }
     }
 }

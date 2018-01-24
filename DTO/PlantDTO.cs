@@ -23,9 +23,6 @@ namespace EasyGrow.DTO
         [Required(ErrorMessage = "Info is Required")]
         public string Info { get; set; }
 
-        [Required(ErrorMessage = "PhaseId is Required")]
-        [Range(1, int.MaxValue, ErrorMessage = "Phase Id must be a positive number")]
-        public int? PhaseId { get; set; }
         [Required(ErrorMessage = "ClassId is Required")]
         [Range(1, int.MaxValue, ErrorMessage = "Class ID must be a positive number")]
         public int? ClassId { get; set; }

@@ -6,20 +6,21 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System;
 
 namespace EasyGrow.Migrations
 {
     [DbContext(typeof(PlantContext))]
-    [Migration("20171229140721_UserManager")]
-    partial class UserManager
+    [Migration("20180123160016_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
             modelBuilder.Entity("EasyGrow.Models.AdditinalCriteries", b =>
                 {
@@ -28,14 +29,9 @@ namespace EasyGrow.Migrations
 
                     b.Property<float>("AreaSawn");
 
-                    b.Property<int>("GeolocationId");
-
                     b.Property<int>("GroundwaterLevelId");
 
                     b.HasKey("AdditinalCriteriesId");
-
-                    b.HasIndex("GeolocationId")
-                        .IsUnique();
 
                     b.HasIndex("GroundwaterLevelId")
                         .IsUnique();
@@ -90,6 +86,8 @@ namespace EasyGrow.Migrations
 
                     b.Property<int>("Duration");
 
+                    b.Property<string>("Name");
+
                     b.HasKey("PhaseId");
 
                     b.ToTable("Phases");
@@ -110,55 +108,57 @@ namespace EasyGrow.Migrations
 
             modelBuilder.Entity("EasyGrow.Models.Plant", b =>
                 {
-                    b.Property<int>("PlantId")
+                    b.Property<int?>("PlantId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AdditinalCriteriesId");
+                    b.Property<int?>("AdditinalCriteriesId");
 
-                    b.Property<int>("Age");
+                    b.Property<int?>("Age");
 
-                    b.Property<int>("AmountOfFertilizingDays");
+                    b.Property<int?>("AmountOfFertilizingDays");
 
-                    b.Property<int>("AmountOfWater");
+                    b.Property<int?>("AmountOfWater");
 
-                    b.Property<int>("ClassId");
+                    b.Property<int?>("ClassId");
 
-                    b.Property<int>("FrequencyOfWateringDays");
+                    b.Property<int?>("FrequencyOfWateringDays");
 
                     b.Property<string>("Info");
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("PhaseId");
-
                     b.HasKey("PlantId");
 
-                    b.HasIndex("AdditinalCriteriesId")
-                        .IsUnique();
+                    b.HasIndex("AdditinalCriteriesId");
 
-                    b.HasIndex("ClassId")
-                        .IsUnique();
-
-                    b.HasIndex("PhaseId")
-                        .IsUnique();
+                    b.HasIndex("ClassId");
 
                     b.ToTable("Plants");
                 });
 
-            modelBuilder.Entity("EasyGrow.Models.User", b =>
+            modelBuilder.Entity("EasyGrow.Models.UserPlantPhaseGeo", b =>
                 {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("UserId");
 
-                    b.Property<string>("Login");
+                    b.Property<int>("PlantId");
 
-                    b.Property<string>("Password");
+                    b.Property<int>("PhaseId");
 
-                    b.Property<string>("Role");
+                    b.Property<int>("GeolocationId");
 
-                    b.HasKey("UserId");
+                    b.Property<byte[]>("Planted")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
-                    b.ToTable("Users");
+                    b.HasKey("UserId", "PlantId", "PhaseId", "GeolocationId");
+
+                    b.HasIndex("GeolocationId");
+
+                    b.HasIndex("PhaseId");
+
+                    b.HasIndex("PlantId");
+
+                    b.ToTable("UserPlantPhaseGeo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -179,8 +179,7 @@ namespace EasyGrow.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -213,6 +212,9 @@ namespace EasyGrow.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
@@ -249,10 +251,11 @@ namespace EasyGrow.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -320,13 +323,18 @@ namespace EasyGrow.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("EasyGrow.Models.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+
+                    b.ToTable("ApplicationUser");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
             modelBuilder.Entity("EasyGrow.Models.AdditinalCriteries", b =>
                 {
-                    b.HasOne("EasyGrow.Models.Geolocation")
-                        .WithOne("AdditinalCriteries")
-                        .HasForeignKey("EasyGrow.Models.AdditinalCriteries", "GeolocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("EasyGrow.Models.GroundwaterLevel")
                         .WithOne("AdditinalCriteries")
                         .HasForeignKey("EasyGrow.Models.AdditinalCriteries", "GroundwaterLevelId")
@@ -338,29 +346,47 @@ namespace EasyGrow.Migrations
                     b.HasOne("EasyGrow.Models.Phase", "Phase")
                         .WithMany("PhasePlants")
                         .HasForeignKey("PhaseId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("EasyGrow.Models.Plant", "Plant")
                         .WithMany("PhasePlants")
                         .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("EasyGrow.Models.Plant", b =>
                 {
                     b.HasOne("EasyGrow.Models.AdditinalCriteries", "AdditinalCriteries")
-                        .WithOne("Plant")
-                        .HasForeignKey("EasyGrow.Models.Plant", "AdditinalCriteriesId")
+                        .WithMany("Plants")
+                        .HasForeignKey("AdditinalCriteriesId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("EasyGrow.Models.Class")
-                        .WithOne("Plant")
-                        .HasForeignKey("EasyGrow.Models.Plant", "ClassId")
+                    b.HasOne("EasyGrow.Models.Class", "Class")
+                        .WithMany("Plants")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("EasyGrow.Models.UserPlantPhaseGeo", b =>
+                {
+                    b.HasOne("EasyGrow.Models.Geolocation", "Geolocation")
+                        .WithMany("UserPlantPhaseGeo")
+                        .HasForeignKey("GeolocationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("EasyGrow.Models.Phase")
-                        .WithOne("Plant")
-                        .HasForeignKey("EasyGrow.Models.Plant", "PhaseId")
+                    b.HasOne("EasyGrow.Models.Phase", "Phase")
+                        .WithMany("UserPlantPhaseGeo")
+                        .HasForeignKey("PhaseId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("EasyGrow.Models.Plant", "Plant")
+                        .WithMany("UserPlantPhaseGeo")
+                        .HasForeignKey("PlantId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("EasyGrow.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("UserPlantPhaseGeo")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

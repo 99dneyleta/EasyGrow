@@ -7,6 +7,10 @@ using System;
 using System.Linq;
 using AutoMapper;
 using EasyGrow.DTO;
+using Microsoft.AspNetCore.Identity;
+using EasyGrow.Models;
+using System.Data.Entity;
+using AutoMapper.QueryableExtensions;
 
 namespace EasyGrow.Controllers
 {
@@ -15,23 +19,39 @@ namespace EasyGrow.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userService = userService;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public IActionResult GetAllUsers()
+        public async System.Threading.Tasks.Task<IActionResult> GetAllUsersAsync()
         {
-            LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.Ok, LogCategory.Info, "Getting user items: Done"));
-
             var allUsers = _userService.GetAll().ToList();
+            try
+            {
+                var users = await _userManager.Users
+            .AsNoTracking()
+            .ProjectTo<ApplicationUserDto>(new { roles = _roleManager.Roles })
+            .ToListAsync();
+                var allPlantsDto = Mapper.Map<ApplicationUserDto>(allUsers.First());
+                LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.Ok, LogCategory.Info, "Getting user items: Done"));
+                
+                return Ok(allPlantsDto);
+            }
+            catch (Exception ex)
+            {
 
-            var allPlantsDto = allUsers.Select(Mapper.Map<ApplicationUserDto>).ToList();
-            return Ok(allPlantsDto);
+            }
+
+            return BadRequest(121);
 
         }
 

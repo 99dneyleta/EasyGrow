@@ -45,7 +45,7 @@ namespace EasyGrow.Controllers
                 return BadRequest("Undefined user");
             }
 
-            var userplant = _context.UserPlants.Select(x => x.PlantId == id && x.ApplicationUser.Email == user.Email);
+            var userplant = _context.UserPlantPhaseGeo.Select(x => x.PlantId == id && x.ApplicationUser.Email == user.Email);
 
             if (!userplant.Contains(true))
             {
@@ -59,24 +59,27 @@ namespace EasyGrow.Controllers
                 return BadRequest("Db haven't this plant");
             }
 
-            var geolocation = _context.Geolocations.FirstOrDefault(p => p.GeolocationId == user.GeolocationId);
+            // TO DO get geo from db
 
-            if (geolocation == null)
-            {
-                return BadRequest("User haven't this geolocation");
-            }
+            // var geolocation = _context.UserPlantPhaseGeo.FirstOrDefault(p => p.GeolocationId == user.GeolocationId);
 
-            try
-            {
-                if (!await Weather.IsRain(plant.FrequencyOfWateringDays, geolocation))
-                    return Ok("Need water");
-                else
-                    return Ok("Don't need water");
-            }
-            catch (Exception weatherEx)
-            {
-                return BadRequest(weatherEx.InnerException.Message);
-            }
+            //  if (geolocation == null)
+            //  {
+            //      return BadRequest("User haven't this geolocation");
+            //  }
+
+            //  try
+            //  {
+            //      if (!await Weather.IsRain(plant.FrequencyOfWateringDays, geolocation))
+            //          return Ok("Need water");
+            //      else
+            //          return Ok("Don't need water");
+            //  }
+            //  catch (Exception weatherEx)
+            //  {
+            //      return BadRequest(weatherEx.InnerException.Message);
+            //  }
+            return Ok();
         }
     }
 }

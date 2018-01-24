@@ -19,8 +19,8 @@ namespace EasyGrow.Controllers
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController(
@@ -79,7 +79,6 @@ namespace EasyGrow.Controllers
             {
                 UserName = model.Email,
                 Email = model.Email,
-                GeolocationId = model.GeolocationId
             };
             try
             {

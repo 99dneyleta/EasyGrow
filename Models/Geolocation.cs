@@ -9,6 +9,6 @@ namespace EasyGrow.Models
         public string Longitude { get; set; }
         public string SeaLevel { get; set; }
 
-        public ICollection<ApplicationUser> ApplicationUsers { get; set; }
+        public List<UserPlantPhaseGeo> UserPlantPhaseGeo { get; set; }
     }
 }

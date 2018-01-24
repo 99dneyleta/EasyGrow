@@ -105,26 +105,21 @@ namespace EasyGrow.Data
 
             if (!context.Users.Any())
             {
-                var geo = context.Geolocations.FirstOrDefault();
-                if (geo != null)
+                var user = new ApplicationUser
                 {
-                    var user = new ApplicationUser
-                    {
-                        UserName = "user@gmail.com",
-                        Email = "user@gmail.com",
-                        GeolocationId = geo.GeolocationId
-                    };
+                    UserName = "user@gmail.com",
+                    Email = "user@gmail.com"
+                };
 
-                    await userManager.CreateAsync(user, password: "Wazxsw12!");
-                    await userManager.AddToRoleAsync(user, role: "user");
-                }
+                await userManager.CreateAsync(user, password: "Wazxsw12!");
+                await userManager.AddToRoleAsync(user, role: "user");
+
                 context.SaveChanges();
 
                 var admin = new ApplicationUser
                 {
                     UserName = "admin@gmail.com",
-                    Email = "admin@gmail.com",
-                    GeolocationId = 2
+                    Email = "admin@gmail.com"
                 };
                 try
                 {
@@ -162,23 +157,24 @@ namespace EasyGrow.Data
                     Class = context.Classes.FirstOrDefault(),
                     FrequencyOfWateringDays = 2,
                     Info = "Interesting info...",
-                    Name = "Tomato",
-                    PhaseId = context.Phases.FirstOrDefault()?.PhaseId
+                    Name = "Tomato"
                 };
 
                 context.Plants.Add(plant);
                 context.SaveChanges();
             }
 
-            if (!context.UserPlants.Any())
+            if (!context.UserPlantPhaseGeo.Any())
             {
-                var userPlant = new UserPlants
+                var userPlantPhaseGeo = new UserPlantPhaseGeo
                 {
                     ApplicationUser = context.Users.FirstOrDefault(),
-                    Plant = context.Plants.FirstOrDefault()
+                    Plant = context.Plants.FirstOrDefault(),
+                    Phase = context.Phases.FirstOrDefault(),
+                    Geolocation = context.Geolocations.FirstOrDefault()
                 };
 
-                context.UserPlants.Add(userPlant);
+                context.UserPlantPhaseGeo.Add(userPlantPhaseGeo);
                 context.SaveChanges();
             }
         }
