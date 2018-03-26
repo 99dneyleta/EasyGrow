@@ -9,8 +9,8 @@ using AutoMapper;
 using EasyGrow.DTO;
 using Microsoft.AspNetCore.Identity;
 using EasyGrow.Models;
-using System.Data.Entity;
 using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace EasyGrow.Controllers
 {
@@ -48,11 +48,8 @@ namespace EasyGrow.Controllers
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
-
-            return BadRequest(121);
-
         }
 
         [HttpGet]

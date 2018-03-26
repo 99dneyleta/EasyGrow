@@ -16,10 +16,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using EasyGrow.Settings;
 
 namespace EasyGrow
 {
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -28,43 +29,22 @@ namespace EasyGrow
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<PlantContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
-           
-            
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<PlantContext>()
                 .AddDefaultTokenProviders();
 
-            // Add automapper
-            IQueryable<IdentityRole> roles = null;
-            
+            services.AddAutoMapper();
 
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<PlantDto, Plant>();
-                cfg.CreateMap<Plant, PlantDto>();
-                cfg.CreateMap<ApplicationUserDto, ApplicationUser>();
-                
-                cfg.CreateMap<ApplicationUser, ApplicationUserDto>()
-                    .ForMember(x => x.Role, opt =>
-                        opt.MapFrom(src =>
-                            src.Id
-                                .Join(roles, a=>src.Id,  b => b.Id, (a, b) => b.Name)
-                                .ToList()
-                        )
-                    );
-            });
-
-            // Create own container
-
+            // Create own containers
             services.AddTransient<IPlantService, PlantService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IModelService<TestModel, TestModelDto>, ModelService<TestModel, TestModelDto>>();
+            services.AddTransient<IModelService<GroundwaterLevel, GroundWaterDto>, ModelService<GroundwaterLevel, GroundWaterDto>>();
 
             // Add Jwt Authentication 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -88,11 +68,12 @@ namespace EasyGrow
                         ClockSkew = TimeSpan.Zero
                     };
                 });
+
+            //Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "EasyGrow API", Version = "v1" });
             });
-
             services.AddSwaggerGen(c =>
             {
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme()
@@ -102,9 +83,11 @@ namespace EasyGrow
                     Name = "Authorization",
                     Type = "apiKey"
                 });
-            });
-            services.AddRouting();
+                c.DocumentFilter<SecurityRequirementsDocumentFilter>();
 
+            });
+
+            services.AddRouting();
             services.AddMvc();
         }
 

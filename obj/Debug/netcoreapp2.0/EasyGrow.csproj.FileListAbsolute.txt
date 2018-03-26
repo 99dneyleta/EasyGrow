@@ -42,3 +42,14 @@ C:\Users\bizico108\Source\Repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.Assemb
 C:\Users\bizico108\Source\Repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.dll
 C:\Users\bizico108\Source\Repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.pdb
 C:\Users\bizico108\Source\Repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.csprojResolveAssemblyReference.cache
+C:\Users\progr\source\repos\EasyGrow\bin\Debug\netcoreapp2.0\EasyGrow.deps.json
+C:\Users\progr\source\repos\EasyGrow\bin\Debug\netcoreapp2.0\EasyGrow.runtimeconfig.json
+C:\Users\progr\source\repos\EasyGrow\bin\Debug\netcoreapp2.0\EasyGrow.runtimeconfig.dev.json
+C:\Users\progr\source\repos\EasyGrow\bin\Debug\netcoreapp2.0\EasyGrow.dll
+C:\Users\progr\source\repos\EasyGrow\bin\Debug\netcoreapp2.0\EasyGrow.pdb
+C:\Users\progr\source\repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.csproj.CoreCompileInputs.cache
+C:\Users\progr\source\repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.AssemblyInfoInputs.cache
+C:\Users\progr\source\repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.AssemblyInfo.cs
+C:\Users\progr\source\repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.dll
+C:\Users\progr\source\repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.pdb
+C:\Users\progr\source\repos\EasyGrow\obj\Debug\netcoreapp2.0\EasyGrow.csprojResolveAssemblyReference.cache

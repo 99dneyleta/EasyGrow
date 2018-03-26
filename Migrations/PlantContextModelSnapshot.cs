@@ -19,7 +19,7 @@ namespace EasyGrow.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
+                .HasAnnotation("ProductVersion", "2.0.2-rtm-10011");
 
             modelBuilder.Entity("EasyGrow.Models.AdditinalCriteries", b =>
                 {
@@ -132,6 +132,18 @@ namespace EasyGrow.Migrations
                     b.HasIndex("ClassId");
 
                     b.ToTable("Plants");
+                });
+
+            modelBuilder.Entity("EasyGrow.Models.TestModel", b =>
+                {
+                    b.Property<int?>("TestModelId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Info");
+
+                    b.HasKey("TestModelId");
+
+                    b.ToTable("TestModel");
                 });
 
             modelBuilder.Entity("EasyGrow.Models.UserPlantPhaseGeo", b =>

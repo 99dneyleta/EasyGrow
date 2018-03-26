@@ -21,6 +21,7 @@ namespace EasyGrow.Data
         public DbSet<GroundwaterLevel> GroundwaterLevels { get; set; }
         public new DbSet<ApplicationUser> Users { get; set; }
         public DbSet<UserPlantPhaseGeo> UserPlantPhaseGeo { get; set; }
+        public DbSet<TestModel> TestModel { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
