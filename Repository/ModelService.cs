@@ -2,7 +2,6 @@
 using EasyGrow.Data;
 using EasyGrow.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EasyGrow.Repository
 {
-    public class ModelService<T,U> : IModelService<T,U> where T : class
+    public class ModelService<T,U,P> : IModelService<T,U,P> where T : class
     {
         private readonly DbSet<T> _thisInstance;
         private readonly PlantContext _context;
@@ -19,80 +18,63 @@ namespace EasyGrow.Repository
         public ModelService(PlantContext context)
         {
             _context = context;
-            //mb Activator create instace<T>
             _thisInstance = context.Set<T>();
         }
 
-        public List<U> GetAll()
+        public async Task<List<U>> GetAllAsync()
         {
-            var allModels =  _thisInstance.ToList();
+            var allModels =  await _thisInstance.ToListAsync();
             var allModelsDto = allModels.Select(element => Mapper.Map<U>(element)).ToList();
             return allModelsDto;
         }
 
-        public U Get(int id)
+        public async Task<U> GetAsync(int id)
         {   
-            return Mapper.Map<U>(_thisInstance.Find(id));
+            return Mapper.Map<U>(await _thisInstance.FindAsync(id));
         }
 
-        public U Add(U modelDto)
+        public async Task<U> AddAsync(P modelDto)
         {
             var model = Mapper.Map<T>(modelDto);
-            var res = _thisInstance.Add(model);
-            res.Context.SaveChanges();
-            return modelDto;
+            var res = await _thisInstance.AddAsync(model);
+            await res.Context.SaveChangesAsync();
+            return Mapper.Map<U>(model);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var model = _thisInstance.Find(id);
+            var model = await _thisInstance.FindAsync(id);
             var res = _thisInstance.Remove(model);
-            res.Context.SaveChangesAsync();
+            await res.Context.SaveChangesAsync();
         }
 
-        public U Update(int id, U modelDto)
+        public async Task<U> UpdateAsync(int id, P modelDto)
         {
-            var notNullProperties = new Dictionary<string,string>();
-            var model = _thisInstance.Find(id);
-            
+            var notNullProperties = new Dictionary<string, string>();
+            var model = await _thisInstance.FindAsync(id);
+
+            if (model == null) return default(U);
+
             foreach (PropertyInfo propertyInfo in modelDto.GetType().GetProperties())
             {
-                try {
-                    var k = propertyInfo.GetValue(modelDto).ToString();
-                }
-                catch
-                {
-                    continue;
-                }
-                var value = propertyInfo.GetValue(modelDto, null).ToString();
-                if (!string.IsNullOrEmpty(value))
-                    notNullProperties[propertyInfo.Name] = value;
-                }
+                var value = propertyInfo.GetValue(modelDto);
 
-            foreach(PropertyInfo propertyInfo in model.GetType().GetProperties())
+                if (value != null && !string.IsNullOrWhiteSpace(value.ToString()))
+                    notNullProperties[propertyInfo.Name] = value.ToString();
+            }
+
+            foreach (PropertyInfo propertyInfo in model.GetType().GetProperties())
             {
-
                 var propertyName = propertyInfo.Name;
-                try
+
+                if (notNullProperties.ContainsKey(propertyName))
                 {
-                    var value = propertyInfo.GetValue(model, null).ToString();
-                    if (notNullProperties.ContainsKey(propertyName))
-                    {
-                        propertyInfo.SetValue(model, notNullProperties[propertyName], null);
-                        var k = propertyInfo.GetValue(model).ToString();
-                    }
-                }
-                catch
-                {
-                    continue;
+                    propertyInfo.SetValue(model, Convert.ChangeType(notNullProperties[propertyName], propertyInfo.PropertyType), null);
                 }
             }
-            var res =_thisInstance.Update(model);
-            return Get(id);
+            var res = _thisInstance.Update(model);
+            await res.Context.SaveChangesAsync();
+            return await GetAsync(id);
         }
-
-        
-
-
     }
 }

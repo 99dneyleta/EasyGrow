@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace EasyGrow.Interfaces
 {
-    public interface IModelService<T,U> where T : class
+    public interface IModelService<T,U,P> where T : class
     {
-        List<U> GetAll();
-        U Add(U modelDto);
-        U Get(int id);
-        void Delete(int id);
-        U Update(int id, U modelDto);
+        Task<List<U>> GetAllAsync();
+        Task<U> AddAsync(P modelDto);
+        Task<U> GetAsync(int uid);
+        Task DeleteAsync(int uid);
+        Task<U> UpdateAsync(int uid, P modelDto);
     }
 }

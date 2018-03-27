@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EasyGrow.DTO;
+using EasyGrow.DTO.PostDto;
 using EasyGrow.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -25,6 +26,12 @@ namespace EasyGrow.Settings
 
             CreateMap<GroundwaterLevel, GroundWaterDto>();
             CreateMap<GroundWaterDto, GroundwaterLevel>();
+
+            CreateMap<GroundWaterDto, GroundWaterPostDto>();
+            CreateMap<GroundWaterPostDto, GroundWaterDto>();
+
+            CreateMap<GroundwaterLevel, GroundWaterPostDto>();
+            CreateMap<GroundWaterPostDto, GroundwaterLevel>();
 
             CreateMap<ApplicationUser, ApplicationUserDto>()
                 .ForMember(x => x.Role, opt =>

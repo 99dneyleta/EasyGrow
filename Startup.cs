@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.EntityFrameworkCore;
 using EasyGrow.Settings;
+using EasyGrow.DTO.PostDto;
 
 namespace EasyGrow
 {
@@ -43,8 +44,7 @@ namespace EasyGrow
             // Create own containers
             services.AddTransient<IPlantService, PlantService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IModelService<TestModel, TestModelDto>, ModelService<TestModel, TestModelDto>>();
-            services.AddTransient<IModelService<GroundwaterLevel, GroundWaterDto>, ModelService<GroundwaterLevel, GroundWaterDto>>();
+            services.AddTransient<IModelService<GroundwaterLevel, GroundWaterDto, GroundWaterPostDto>, ModelService<GroundwaterLevel, GroundWaterDto, GroundWaterPostDto>>();
 
             // Add Jwt Authentication 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();

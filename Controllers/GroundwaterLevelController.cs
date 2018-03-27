@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using EasyGrow.DTO;
+using EasyGrow.DTO.PostDto;
 using EasyGrow.Helpers;
 using EasyGrow.Interfaces;
 using EasyGrow.Models;
@@ -12,95 +14,137 @@ namespace EasyGrow.Controllers
     [Route("groundwater_level")]
     public class GroundwaterLevelController : Controller
     {
-        private readonly IModelService<GroundwaterLevel, GroundWaterDto> _modelService;
-        public GroundwaterLevelController(IModelService<GroundwaterLevel, GroundWaterDto> testmodelService)
+        private readonly IModelService<GroundwaterLevel, GroundWaterDto, GroundWaterPostDto> _modelService;
+        public GroundwaterLevelController(IModelService<GroundwaterLevel, GroundWaterDto, GroundWaterPostDto> testmodelService)
         {
             _modelService = testmodelService;
         }
 
         [HttpGet]
         [Authorize(Roles = "admin,user")]
-        public IActionResult GetAllGroundwaterLevels()
+        public async Task<IActionResult> GetAllGroundwaterLevelsAsync()
         {
             try
             {
-                return (Ok(_modelService.GetAll()));
+                var result = await _modelService.GetAllAsync();
+
+                LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.Ok, LogCategory.Info,
+                "Get: " + _modelService.GetType() + "all items: successfully"));
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.InernalServerError, LogCategory.Error,
+                "Get: " + _modelService.GetType() + "all items failed: " + ex.Message));
+                return StatusCode(LoggingEvents.InernalServerError, ex.Message);
             }
         }
 
         [HttpGet("{id}", Name = "GetGroundwaterLevel")]
         [Authorize(Roles = "admin,user")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetByNameAsync(int id)
         {
 
             try
             {
-                return (Ok(_modelService.Get(id)));
+                var result = await _modelService.GetAsync(id);
+
+                if(result == null)
+                {
+                    LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.NotFound, LogCategory.Warning,
+                        "Get item " + id + ": Not Found"));
+
+                    return NotFound("Entity not found");
+                }
+
+                LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.Ok, LogCategory.Info,
+                "Get item " + id + ": successfully"));
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.NoContent, LogCategory.Info,
+                "Get item " + id + "failed:" + ex.Message));
+                return StatusCode(LoggingEvents.InernalServerError,ex.Message);
             }
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public IActionResult CreateGroundwaterLevel(GroundWaterDto model)
+        public async Task<IActionResult> CreateGroundwaterLevelAsync(GroundWaterPostDto model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
+                LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.BadRequest, LogCategory.Error,
+                "Creating item: " + _modelService.GetType() + "- failed. Wrong input model."));
                 return BadRequest(ModelState);
             }
             try
             {
-                return Ok(_modelService.Add(model));
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500,ex.Message);
+                var result = await _modelService.AddAsync(model);
 
+                LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.Ok, LogCategory.Info,
+                "Creating item: " + _modelService.GetType() + "- successfully"));
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.InernalServerError, LogCategory.Error,
+                "Creating item: " + _modelService.GetType() + "- failed. " + ex.Message));
+                return StatusCode(LoggingEvents.InernalServerError, ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             try
             {
-                _modelService.Delete(id);
+                await _modelService.DeleteAsync(id);
+
                 LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.NoContent, LogCategory.Info,
                 "Deleting item: " + id + " Deleted"));
+
                 return new NoContentResult();
             }
-            catch
+            catch (Exception ex)
             {
                 LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.NoContent, LogCategory.Warning,
-                    "Deleting item: " + id + " Not Found"));
+                    "Deleting item: " + id + " Not Found" + ex.Message));
                 return NotFound(new JsonResult(new { error = "Updated entity not found" }).Value);
             }
         }
 
         [HttpPatch]
         [Authorize(Roles = "admin")]
-        public IActionResult Update(int id, GroundWaterDto modelDto)
+        public async Task<IActionResult> UpdateAsync(int id, GroundWaterPostDto modelDto)
         {
             try
             {
-                _modelService.Update(id, modelDto);
+                var res = await _modelService.UpdateAsync(id, modelDto);
+
+                if (res == null)
+                {
+                    LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.NotFound, LogCategory.Warning,
+                        "Update item " + id + ": Not Found"));
+
+                    return NotFound("Entity not found");
+                }
+
                 LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.Ok, LogCategory.Info,
                 "Updating item: " + id + " Updated"));
-                return Ok(modelDto);
+
+                return Ok(res);
             }
-            catch
+            catch (Exception ex)
             {
                 LogWriter.WriteLog(LogWriter.CreateLog(LoggingEvents.InernalServerError, LogCategory.Error,
-                    "Updating item: " + id + " Error where update"));
-                return StatusCode(500);
+                    "Updating item: " + id + " Error where update;" + ex.Message));
+                return StatusCode(LoggingEvents.InernalServerError, ex.Message);
             }
         }
     }

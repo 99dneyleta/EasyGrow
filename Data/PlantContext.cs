@@ -27,6 +27,8 @@ namespace EasyGrow.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<GroundwaterLevel>().HasIndex(i => i.Name).IsUnique();
+
             modelBuilder.Entity<UserPlantPhaseGeo>()
                 .HasKey(t => new { t.UserId, t.PlantId, t.PhaseId, t.GeolocationId });
 

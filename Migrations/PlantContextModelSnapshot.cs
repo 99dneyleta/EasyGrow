@@ -74,6 +74,9 @@ namespace EasyGrow.Migrations
 
                     b.HasKey("GroundwaterLevelId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("GroundwaterLevels");
                 });
 
