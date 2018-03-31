@@ -16,12 +16,11 @@ namespace EasyGrow.Data
         public DbSet<Phase> Phases { get; set; }
         public DbSet<Class> Classes { get; set; }
 
-        public DbSet<AdditinalCriteries> AdditinalCriteries { get; set; }
+        public DbSet<AdditionalCriteries> AdditionalCriteries { get; set; }
         public DbSet<Geolocation> Geolocations { get; set; }
         public DbSet<GroundwaterLevel> GroundwaterLevels { get; set; }
         public new DbSet<ApplicationUser> Users { get; set; }
         public DbSet<UserPlantPhaseGeo> UserPlantPhaseGeo { get; set; }
-        public DbSet<TestModel> TestModel { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -73,9 +72,9 @@ namespace EasyGrow.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Plant>()
-               .HasOne(sc => sc.AdditinalCriteries)
+               .HasOne(sc => sc.AdditionalCriteries)
                .WithMany(s => s.Plants)
-               .HasForeignKey(sc => sc.AdditinalCriteriesId)
+               .HasForeignKey(sc => sc.AdditionalCriteriesId)
                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Plant>()

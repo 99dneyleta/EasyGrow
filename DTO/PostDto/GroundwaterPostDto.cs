@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace EasyGrow.DTO.PostDto
 {
+    
     public class GroundWaterPostDto
     {
-        [Required]
         public string Name { get; set; }
+        public int GroundwaterLevelId { get; set; }
     }
 }

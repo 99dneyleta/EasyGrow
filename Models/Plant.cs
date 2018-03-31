@@ -18,9 +18,9 @@ namespace EasyGrow.Models
         public int? AmountOfFertilizingDays { get; set; }
         public string Info { get; set; }
         public int? ClassId { get; set; }
-        public int? AdditinalCriteriesId { get; set; }
+        public int? AdditionalCriteriesId { get; set; }
 
-        public AdditinalCriteries AdditinalCriteries { get; set; }
+        public AdditionalCriteries AdditionalCriteries { get; set; }
         public Class Class { get; set; }
         public List<PhasePlant> PhasePlants { get; set; }
         public List<UserPlantPhaseGeo> UserPlantPhaseGeo { get; set; }

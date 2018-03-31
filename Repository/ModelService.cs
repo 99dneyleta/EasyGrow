@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EasyGrow.Data;
+using EasyGrow.Helpers;
 using EasyGrow.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,19 +22,19 @@ namespace EasyGrow.Repository
             _thisInstance = context.Set<T>();
         }
 
-        public async Task<List<U>> GetAllAsync()
+        public virtual async Task<List<U>> GetAllAsync()
         {
             var allModels =  await _thisInstance.ToListAsync();
             var allModelsDto = allModels.Select(element => Mapper.Map<U>(element)).ToList();
             return allModelsDto;
         }
 
-        public async Task<U> GetAsync(int id)
+        public virtual async Task<U> GetAsync(int id)
         {   
             return Mapper.Map<U>(await _thisInstance.FindAsync(id));
         }
 
-        public async Task<U> AddAsync(P modelDto)
+        public virtual async Task<U> AddAsync(P modelDto)
         {
             var model = Mapper.Map<T>(modelDto);
             var res = await _thisInstance.AddAsync(model);
@@ -41,14 +42,14 @@ namespace EasyGrow.Repository
             return Mapper.Map<U>(model);
         }
 
-        public async Task DeleteAsync(int id)
+        public virtual async Task DeleteAsync(int id)
         {
             var model = await _thisInstance.FindAsync(id);
             var res = _thisInstance.Remove(model);
             await res.Context.SaveChangesAsync();
         }
 
-        public async Task<U> UpdateAsync(int id, P modelDto)
+        public virtual async Task<U> UpdateAsync(int id, P modelDto)
         {
             var notNullProperties = new Dictionary<string, string>();
             var model = await _thisInstance.FindAsync(id);
@@ -69,12 +70,16 @@ namespace EasyGrow.Repository
 
                 if (notNullProperties.ContainsKey(propertyName))
                 {
-                    propertyInfo.SetValue(model, Convert.ChangeType(notNullProperties[propertyName], propertyInfo.PropertyType), null);
+                    Type t = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
+                    object safeValue = (notNullProperties[propertyName] == null) ? null : Convert.ChangeType(notNullProperties[propertyName], t);
+                    propertyInfo.SetValue(model, safeValue, null);
+                    
                 }
             }
             var res = _thisInstance.Update(model);
             await res.Context.SaveChangesAsync();
             return await GetAsync(id);
         }
+
     }
 }

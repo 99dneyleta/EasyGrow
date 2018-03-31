@@ -134,15 +134,15 @@ namespace EasyGrow.Data
                 }
             }
 
-            if (!context.AdditinalCriteries.Any())
+            if (!context.AdditionalCriteries.Any())
             {
-                var addCrit = new AdditinalCriteries();
+                var addCrit = new AdditionalCriteries();
                 var groundWater = context.GroundwaterLevels.FirstOrDefault();
                 addCrit.AreaSawn = 25;
 
                 if (groundWater != null) addCrit.GroundwaterLevelId = groundWater.GroundwaterLevelId;
 
-                context.AdditinalCriteries.Add(addCrit);
+                context.AdditionalCriteries.Add(addCrit);
                 context.SaveChanges();
             }
 
@@ -150,7 +150,7 @@ namespace EasyGrow.Data
             {
                 var plant = new Plant
                 {
-                    AdditinalCriteries = context.AdditinalCriteries.FirstOrDefault(),
+                    AdditionalCriteries = context.AdditionalCriteries.FirstOrDefault(),
                     Age = 2,
                     AmountOfFertilizingDays = 21,
                     AmountOfWater = 2,

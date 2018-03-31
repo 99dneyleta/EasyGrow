@@ -21,20 +21,20 @@ namespace EasyGrow.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011");
 
-            modelBuilder.Entity("EasyGrow.Models.AdditinalCriteries", b =>
+            modelBuilder.Entity("EasyGrow.Models.AdditionalCriteries", b =>
                 {
-                    b.Property<int>("AdditinalCriteriesId")
+                    b.Property<int>("AdditionalCriteriesId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<float>("AreaSawn");
 
-                    b.Property<int>("GroundwaterLevelId");
+                    b.Property<int?>("GroundwaterLevelId");
 
-                    b.HasKey("AdditinalCriteriesId");
+                    b.HasKey("AdditionalCriteriesId");
 
                     b.HasIndex("GroundwaterLevelId");
 
-                    b.ToTable("AdditinalCriteries");
+                    b.ToTable("AdditionalCriteries");
                 });
 
             modelBuilder.Entity("EasyGrow.Models.Class", b =>
@@ -112,7 +112,7 @@ namespace EasyGrow.Migrations
                     b.Property<int?>("PlantId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("AdditinalCriteriesId");
+                    b.Property<int?>("AdditionalCriteriesId");
 
                     b.Property<int?>("Age");
 
@@ -130,23 +130,11 @@ namespace EasyGrow.Migrations
 
                     b.HasKey("PlantId");
 
-                    b.HasIndex("AdditinalCriteriesId");
+                    b.HasIndex("AdditionalCriteriesId");
 
                     b.HasIndex("ClassId");
 
                     b.ToTable("Plants");
-                });
-
-            modelBuilder.Entity("EasyGrow.Models.TestModel", b =>
-                {
-                    b.Property<int?>("TestModelId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Info");
-
-                    b.HasKey("TestModelId");
-
-                    b.ToTable("TestModel");
                 });
 
             modelBuilder.Entity("EasyGrow.Models.UserPlantPhaseGeo", b =>
@@ -346,12 +334,11 @@ namespace EasyGrow.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
-            modelBuilder.Entity("EasyGrow.Models.AdditinalCriteries", b =>
+            modelBuilder.Entity("EasyGrow.Models.AdditionalCriteries", b =>
                 {
                     b.HasOne("EasyGrow.Models.GroundwaterLevel", "GroundwaterLevel")
-                        .WithMany("AdditinalCriteries")
-                        .HasForeignKey("GroundwaterLevelId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("AdditionalCriteries")
+                        .HasForeignKey("GroundwaterLevelId");
                 });
 
             modelBuilder.Entity("EasyGrow.Models.PhasePlant", b =>
@@ -369,9 +356,9 @@ namespace EasyGrow.Migrations
 
             modelBuilder.Entity("EasyGrow.Models.Plant", b =>
                 {
-                    b.HasOne("EasyGrow.Models.AdditinalCriteries", "AdditinalCriteries")
+                    b.HasOne("EasyGrow.Models.AdditionalCriteries", "AdditionalCriteries")
                         .WithMany("Plants")
-                        .HasForeignKey("AdditinalCriteriesId")
+                        .HasForeignKey("AdditionalCriteriesId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("EasyGrow.Models.Class", "Class")

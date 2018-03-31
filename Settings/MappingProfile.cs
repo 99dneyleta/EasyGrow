@@ -21,17 +21,27 @@ namespace EasyGrow.Settings
 
             CreateMap<ApplicationUserDto, ApplicationUser>();
 
-            CreateMap<TestModel, TestModelDto>();
-            CreateMap<TestModelDto, TestModel>();
+            // GroundWater
 
             CreateMap<GroundwaterLevel, GroundWaterDto>();
             CreateMap<GroundWaterDto, GroundwaterLevel>();
-
             CreateMap<GroundWaterDto, GroundWaterPostDto>();
             CreateMap<GroundWaterPostDto, GroundWaterDto>();
-
             CreateMap<GroundwaterLevel, GroundWaterPostDto>();
             CreateMap<GroundWaterPostDto, GroundwaterLevel>();
+
+            // AdditionalCriteries
+
+            CreateMap<AdditionalCriteries, AdditionalCriteriesDto>()
+                .ForPath(dest=>dest.GroundwaterLevel.GroundwaterLevelId,opt => opt.MapFrom(src => src.GroundwaterLevelId));
+            CreateMap<AdditionalCriteriesDto, AdditionalCriteries>();
+            CreateMap<AdditionalCriteriesDto, AdditionalCriteriesPostDto>();
+            CreateMap<AdditionalCriteriesPostDto, AdditionalCriteriesDto>();
+            CreateMap<AdditionalCriteries, AdditionalCriteriesPostDto>();
+            CreateMap<AdditionalCriteriesPostDto, AdditionalCriteries>();
+
+
+
 
             CreateMap<ApplicationUser, ApplicationUserDto>()
                 .ForMember(x => x.Role, opt =>

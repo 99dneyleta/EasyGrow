@@ -28,6 +28,6 @@ namespace EasyGrow.DTO
         public int? ClassId { get; set; }
         [Required(ErrorMessage = "AC is Required")]
         [Range(1, int.MaxValue, ErrorMessage = "Additinal Criteries must be a positive number")]
-        public int? AdditinalCriteriesId { get; set; }
+        public int? AdditionalCriteriesId { get; set; }
     }
 }

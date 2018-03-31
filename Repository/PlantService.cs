@@ -50,7 +50,7 @@ namespace EasyGrow.Repository
                 return null;
             }
 
-            newPlant.AdditinalCriteriesId = plant.AdditinalCriteriesId;
+            newPlant.AdditionalCriteriesId = plant.AdditionalCriteriesId;
             newPlant.Age = plant.Age;
             newPlant.AmountOfFertilizingDays = plant.AmountOfFertilizingDays;
             newPlant.AmountOfWater = plant.AmountOfWater;
