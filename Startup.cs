@@ -48,6 +48,9 @@ namespace EasyGrow
             services.AddTransient<IModelService<GroundwaterLevel, GroundWaterDto, GroundWaterPostDto>, ModelService<GroundwaterLevel, GroundWaterDto, GroundWaterPostDto>>();
             services.AddTransient<IModelService<AdditionalCriteries, AdditionalCriteriesDto, AdditionalCriteriesPostDto>, ModelService<AdditionalCriteries, AdditionalCriteriesDto, AdditionalCriteriesPostDto>>();
             services.AddTransient<IAdditionalCriteriesService, AdditionalCriteriesService>();
+            services.AddTransient<IModelService<Class, ClassDto, ClassPostDto>, ModelService<Class, ClassDto, ClassPostDto>>();
+            services.AddTransient<IModelService<Geolocation, GeolocationDto, GeolocationPostDto>, ModelService<Geolocation, GeolocationDto, GeolocationPostDto>>();
+            services.AddTransient<IModelService<Phase, PhaseDto, PhasePostDto>, ModelService<Phase, PhaseDto, PhasePostDto>>();
 
             // Add Jwt Authentication 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();

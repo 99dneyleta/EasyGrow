@@ -8,7 +8,7 @@ using EasyGrow.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mapper = AutoMapper.Mapper;
-
+/*
 namespace EasyGrow.Controllers
 {
     [Produces("application/json")]
@@ -136,3 +136,4 @@ namespace EasyGrow.Controllers
         }
     }
 }
+*/

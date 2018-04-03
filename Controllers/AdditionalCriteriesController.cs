@@ -6,6 +6,7 @@ using EasyGrow.Helpers;
 using EasyGrow.Interfaces;
 using EasyGrow.Models;
 using EasyGrow.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EasyGrow.Controllers
@@ -24,8 +25,8 @@ namespace EasyGrow.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "admin,user")]
-        public async Task<IActionResult> GetAllGroundwaterLevelsAsync()
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> GetAllAdditionalCriteriesAsync()
         {
             try
             {
@@ -45,8 +46,8 @@ namespace EasyGrow.Controllers
         }
 
         [HttpGet("{id}", Name = "GetGetAdditionalCriteries")]
-        //[Authorize(Roles = "admin,user")]
-        public async Task<IActionResult> GetByNameAsync(int id)
+        [Authorize(Roles = "admin,user")]
+        public async Task<IActionResult> GetAsync(int id)
         {
 
             try
@@ -75,7 +76,7 @@ namespace EasyGrow.Controllers
         }
         
         [HttpPost]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         public async Task<IActionResult> CreateAdditionalCriteriesAsync(AdditionalCriteriesPostDto model)
         {
             if (!ModelState.IsValid)
@@ -102,7 +103,7 @@ namespace EasyGrow.Controllers
         }
         
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             try
@@ -123,7 +124,7 @@ namespace EasyGrow.Controllers
         }
 
         [HttpDelete("delete_foreign_key/{id}")]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         public async Task<IActionResult> DeleteForeignKeyAsync(int id)
         {
             try
@@ -144,7 +145,7 @@ namespace EasyGrow.Controllers
         }
 
         [HttpPatch]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,user")]
         public async Task<IActionResult> UpdateAsync(int id, AdditionalCriteriesPostDto modelDto)
         {
             if (!ModelState.IsValid)

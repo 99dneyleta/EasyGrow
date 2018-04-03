@@ -40,6 +40,39 @@ namespace EasyGrow.Settings
             CreateMap<AdditionalCriteries, AdditionalCriteriesPostDto>();
             CreateMap<AdditionalCriteriesPostDto, AdditionalCriteries>();
 
+            // Class
+
+            CreateMap<Class, ClassDto>();
+            CreateMap<ClassDto, Class>();
+            CreateMap<ClassDto, ClassPostDto>();
+            CreateMap<ClassPostDto, ClassDto>();
+            CreateMap<Class, ClassPostDto>();
+            CreateMap<ClassPostDto, Class>();
+
+            // Geolocation
+
+            CreateMap<Geolocation, GeolocationDto>();
+            CreateMap<GeolocationDto, Geolocation>();
+            CreateMap<GeolocationDto, GeolocationPostDto>();
+            CreateMap<GeolocationPostDto, GeolocationDto>();
+            CreateMap<Geolocation, GeolocationPostDto>();
+            CreateMap<GeolocationPostDto, Geolocation>();
+
+            // Phase
+
+            CreateMap<Phase, PhaseDto>();
+            CreateMap<PhaseDto, Phase>();
+            CreateMap<PhaseDto, PhasePostDto>();
+            CreateMap<PhasePostDto, PhaseDto>();
+            CreateMap<Phase, PhasePostDto>();
+            CreateMap<PhasePostDto, Phase>();
+
+            // Plant
+            CreateMap<PlantDto, PlantPostDto>();
+            CreateMap<PlantPostDto, PlantDto>();
+            CreateMap<Plant, PlantPostDto>();
+            CreateMap<PlantPostDto, Plant>();
+
 
 
 

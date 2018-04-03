@@ -32,14 +32,12 @@ namespace EasyGrow.Data
                 {
                     Latitude = "48.2921",
                     Longitude = "25.9358",
-                    SeaLevel = "248"
                 };
 
                 var london = new Geolocation
                 {
                     Latitude = "51.5074",
                     Longitude = "0.1278",
-                    SeaLevel = "35"
                 };
 
                 context.Geolocations.AddRange(chernivtsi, london);

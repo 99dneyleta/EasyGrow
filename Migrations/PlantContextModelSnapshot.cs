@@ -58,8 +58,6 @@ namespace EasyGrow.Migrations
 
                     b.Property<string>("Longitude");
 
-                    b.Property<string>("SeaLevel");
-
                     b.HasKey("GeolocationId");
 
                     b.ToTable("Geolocations");
